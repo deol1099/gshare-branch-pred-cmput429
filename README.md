@@ -13,9 +13,9 @@ You can apply the patch provided in the repo in order to get some template code.
 The patch makes a few small changes to the gem5 source code:
 - Add a GShare template to the `BranchPredictor.py` file
 - Add the GShare source to the SConscript build system
-- Provide template code for `gshare.hh` and `gshare.cc`
+- Provide template code for `gshare.hh` and `gshare.cc` both in `gem5/src/cpu/pred`
 
-fortunately, patch files are pretty readable, so if you want any specifics just go and look in the patch file.
+Fortunately, patch files are pretty readable, so if you want any specifics just go and look in the patch file.
 
 ## What should I submit?
 
