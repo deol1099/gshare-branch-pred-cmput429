@@ -41,6 +41,8 @@ import gem5.utils.multisim as multisim
 from m5.objects import *
 from m5.stats.gem5stats import get_simstat
 
+from P550Processor import P550Processor
+
 #####
 # Needed for local imports since gem5 takes our file
 #  and executes it in the context of the multisim module
@@ -52,7 +54,6 @@ sys.path.append(thispath)
 ######
 
 from P550Caches import *
-from P550Processorw3 import *
 
 # This check ensures the gem5 binary is compiled to the RISCV ISA target. If not,
 # an exception will be thrown.
@@ -75,37 +76,39 @@ cache_list = [P550CacheHierarchy(l1d_latency=i) for i in range(1, 5)]
 def terminate_print():
     return True
 
-for id, cache in enumerate(cache_list):
-    processor = P550Processor(num_cores=1, num_int_alu=2, width=3)
-    # We use the P550 Cache system
-    #  see P550Caches.py
-    cache_hierarchy = cache
+for predictor in ["local"]:  #, "global", "gshare"]:
+    for workload in ["riscv-spec-mcf-run-se", "riscv-spec-gcc-mcf-run-se", "riscv-spec-gcc-lbm-run-se"]:
 
-    # We use a single channel DDR3_1600 memory system
-    memory = SingleChannelDDR3_1600(size="8GiB")
+        processor = P550Processor(num_cores=1, predictor=predictor)
+        # We use the P550 Cache system
+        #  see P550Caches.py
+        cache_hierarchy = P550CacheHierarchy(l1d_latency=1)
 
-    # The gem5 library simble board which can be used to run simple SE-mode
-    # simulations.
-    board = SimpleBoard(
-        clk_freq="3GHz",
-        processor=processor,
-        memory=memory,
-        cache_hierarchy=cache_hierarchy,
-    )
+        # We use a single channel DDR3_1600 memory system
+        memory = SingleChannelDDR3_1600(size="8GiB")
 
-    # Set the board workload to our workload
-    board.set_workload(obtain_resource("riscv-spec-mcf-run-se"))
-    label = f"processor_{processor}"
+        # The gem5 library simble board which can be used to run simple SE-mode
+        # simulations.
+        board = SimpleBoard(
+            clk_freq="3GHz",
+            processor=processor,
+            memory=memory,
+            cache_hierarchy=cache_hierarchy,
+        )
 
-    simulation = Simulator(
-        board=board,
-        on_exit_event={
-            ExitEvent.MAX_INSTS : [terminate_print],
-        }
-    )
-    simulation.schedule_max_insts(1000000)
+        # Set the board workload to our workload
+        board.set_workload(obtain_resource(workload))
+        label = f"processor_{processor}"
 
-    # Set up the simulator
-    multisim.add_simulator(
-        simulation
-    )
+        simulation = Simulator(
+            board=board,
+            on_exit_event={
+                ExitEvent.MAX_INSTS : [terminate_print],
+            }
+        )
+        simulation.schedule_max_insts(1000000)
+
+        # Set up the simulator
+        multisim.add_simulator(
+            simulation
+        )
