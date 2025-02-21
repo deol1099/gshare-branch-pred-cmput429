@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# Invoke using `gem5 -m gem5.utils.multisim P550System.py`
+# Invoke using `gem5 P550SystemSingleSim.py`
 from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.cpu_types import CPUTypes
@@ -34,8 +34,6 @@ from gem5.resources.resource import obtain_resource,BinaryResource
 from gem5.resources.downloader import list_resources
 from gem5.simulate.simulator import Simulator
 from gem5.utils.requires import requires
-
-import gem5.utils.multisim as multisim
 
 from m5.objects import *
 
@@ -61,7 +59,6 @@ requires(isa_required=ISA.RISCV)
 # NOTE: this only sets the max number
 #  of processes to run at once, not
 #  the maximum number of sims you can run
-multisim.set_num_processes(4)
 
 # We use the P550 processor with one core.
 #  see the P550Processor.py file

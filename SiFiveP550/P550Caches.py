@@ -32,8 +32,6 @@ gem5 configuration script.
 If you need additional CLI options, you should use the SimpleOpts
 wrapper to set up command line options from each individual class.
 """
-
-from tarfile import data_filter
 import m5
 import os
 from m5.objects import Cache
