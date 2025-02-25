@@ -6,7 +6,7 @@ Refer to the [gem5 source code](https://github.com/gem5/gem5/tree/stable/src/cpu
 1. The lookup function
 2. The update function
 
-You can apply the patch provided in the repo in order to get some template code. Make sure your gem5 is at version 20.0.0.0 or else the patch will not work.
+You can apply the patch provided in the repo in order to get some template code. Make sure your gem5 is at version 24.0.0.0 or else the patch will not work.
 
 ## What does the patch do?
 
