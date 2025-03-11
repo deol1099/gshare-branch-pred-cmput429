@@ -1,3 +1,4 @@
+
 from gem5.isas import ISA
 from gem5.components.processors.base_cpu_core import BaseCPUCore
 from gem5.components.processors.base_cpu_processor import BaseCPUProcessor
@@ -28,6 +29,7 @@ class P550Core(BaseCPUCore):
             fuPool=fu_pool,
             cpu_id=core_id,
             branchPred=P550Core.parse_predictor(predictor),
+            max_insts_any_thread=100_000_000,
             # fetchWidth=1,
         )
 
@@ -60,6 +62,9 @@ class P550Core(BaseCPUCore):
             return GlobalBP()
         elif pred == "gshare":
             return GShareBP()
+        elif pred == "perceptron":
+            return MultiperspectivePerceptron8KB()
+
 
 
 class P550Processor(BaseCPUProcessor):

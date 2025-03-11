@@ -47,6 +47,28 @@ thispath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(thispath)
 ######
 
+# Parse command-line arguments for predictor type and workload.
+if len(sys.argv) < 3:
+    print("Usage: {} <predictor_type: gshare or perceptron> <workload: mcf, gcc1, gcc2>".format(sys.argv[0]))
+    sys.exit(1)
+
+predictor_type = sys.argv[1]
+workload_type = sys.argv[2]
+
+if predictor_type not in ["gshare", "perceptron"]:
+    print("Invalid predictor type. Choose either 'gshare' or 'perceptron'.")
+    sys.exit(1)
+
+if workload_type == "mcf":
+    workload_resource = "riscv-spec-mcf-run-se"
+elif workload_type == "gcc1":
+    workload_resource = "riscv-spec-gcc-mcf-run-se"
+elif workload_type == "gcc2":
+    workload_resource = "riscv-spec-gcc-lbm-run-se"
+else:
+    print("Invalid workload. Choose one of: mcf, gcc1, gcc2.")
+    sys.exit(1)
+
 from P550Caches import *
 from P550Processor import *
 
@@ -63,7 +85,7 @@ requires(isa_required=ISA.RISCV)
 # We use the P550 processor with one core.
 #  see the P550Processor.py file
 #  TODO Create your processor and add it to this list
-processor = P550Processor(num_cores=1, predictor="local")  # global, gshare
+processor = P550Processor(num_cores=1, predictor=predictor_type)  # perceptron, gshare
 
 # We use the P550 Cache system
 #  see P550Caches.py
@@ -84,7 +106,7 @@ board = SimpleBoard(
 # Set the board workload to our workload
 # board.set_workload(obtain_resource("riscv-spec-mcf-run-se"))
 # board.set_workload(obtain_resource("riscv-spec-gcc-mcf-run-se"))
-board.set_workload(obtain_resource("riscv-spec-gcc-lbm-run-se"))
+board.set_workload(obtain_resource(workload_resource))
 
 simulator = Simulator(board=board)
 
